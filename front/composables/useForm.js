@@ -61,32 +61,35 @@ export function useForm(props) {
   async function saveItem() {
     isLoading.value = true
 
-    let newItem = item.value
-    newItem = transformer ? transformer.transformToApi(newItem) : newItem
+    try {
+      let newItem = item.value
+      newItem = transformer ? transformer.transformToApi(newItem) : newItem
 
-    let response = null
-    if (itemId.value) {
-      response = await repository.update(itemId.value, newItem)
-    } else {
-      response = await repository.insert(newItem)
-    }
-    isLoading.value = false
-
-    if (ResponseUtils.isSuccess(response)) {
-      UIUtils.showToastSuccess('Success')
-      onEvent?.(useFormEvent.postSave, response)
-
-      // Should reset form
-      if (!itemId.value && profileStore.resetFormOnCreate) {
-        item.value = model.getEmpty()
-        resetFields ? resetFields() : null
+      let response = null
+      if (itemId.value) {
+        response = await repository.update(itemId.value, newItem)
       } else {
-        let responseId = get(response, 'data.data.id')
-        routeForm ? await navigateTo(`${routeForm}/${responseId}`) : null
+        response = await repository.insert(newItem)
       }
-    }
 
-    return response
+      if (ResponseUtils.isSuccess(response)) {
+        UIUtils.showToastSuccess('Success')
+        await onEvent?.(useFormEvent.postSave, response)
+
+        // Should reset form
+        if (!itemId.value && profileStore.resetFormOnCreate) {
+          item.value = model.getEmpty()
+          resetFields ? resetFields() : null
+        } else {
+          let responseId = get(response, 'data.data.id')
+          routeForm ? await navigateTo(`${routeForm}/${responseId}`) : null
+        }
+      }
+
+      return response
+    } finally {
+      isLoading.value = false
+    }
   }
 
   const onDelete = async () => {

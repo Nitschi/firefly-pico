@@ -87,7 +87,7 @@
 
         <budget-select v-model="budget" :style="getStyleForField(transactionFormField.budget)" />
 
-        <transaction-attachments-list :transaction="item" :style="getStyleForField(transactionFormField.attachments)" />
+        <transaction-attachments-list ref="attachmentsListRef" :transaction="item" :style="getStyleForField(transactionFormField.attachments)" />
       </van-cell-group>
 
       <div style="margin: 16px; position: relative">
@@ -121,7 +121,7 @@ import { useDataStore } from '~/stores/dataStore'
 import _, { get, head, isEqual } from 'lodash'
 import { useProfileStore } from '~/stores/profileStore'
 import { ref } from 'vue'
-import { useForm } from '~/composables/useForm'
+import { useForm, useFormEvent } from '~/composables/useForm'
 import Account from '~/models/Account'
 import { generateChildren } from '~/utils/VueUtils'
 import Transaction from '~/models/Transaction'
@@ -143,8 +143,6 @@ import { rule } from '~/utils/ValidationUtils.js'
 import Currency from '~/models/Currency.js'
 import TransactionNoteField from '~/components/transaction/transaction-note-field.vue'
 import TransactionAttachmentsList from '~/components/transaction/transaction-attachements/transaction-attachments-list.vue'
-import AttachmentRepository from '~/repository/AttachmentRepository.js'
-import AttachmentTransformer from '~/transformers/AttachmentTransformer.js'
 
 let dataStore = useDataStore()
 let profileStore = useProfileStore()
@@ -152,6 +150,16 @@ const route = useRoute()
 
 const form = ref(null)
 const assistantText = ref('')
+const attachmentsListRef = ref(null)
+
+const onEvent = async (event, payload) => {
+  if (event === useFormEvent.postSave) {
+    const journalId = get(payload, 'data.data.attributes.transactions.0.transaction_journal_id')
+    if (journalId && attachmentsListRef.value) {
+      await attachmentsListRef.value.uploadPendingFiles(journalId)
+    }
+  }
+}
 
 let { itemId, item, saveItem, onDelete, onNew, onValidationError, formName } = useForm({
   form: form,
@@ -161,6 +169,7 @@ let { itemId, item, saveItem, onDelete, onNew, onValidationError, formName } = u
   resetFields: () => {
     assistantText.value = ''
   },
+  onEvent,
 })
 
 const pathKey = 'attributes.transactions.0'
