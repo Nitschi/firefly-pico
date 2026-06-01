@@ -49,7 +49,9 @@
           </template>
         </account-select>
 
+        <!-- femto: destination hidden; value still flows from profileStore.defaultAccountDestination via getEmpty(). -->
         <account-select
+          v-if="false"
           v-model="accountDestination"
           :label="$t('transaction.destination_account')"
           :allowed-types="accountDestinationAllowedTypes"
