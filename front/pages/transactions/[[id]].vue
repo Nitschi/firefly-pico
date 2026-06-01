@@ -8,7 +8,8 @@
 
     <div class="mb-10" />
 
-    <transaction-assistant v-if="!itemId && !isCloning" v-model="assistantText" @change="onAssistant" @keyup.enter="saveItem" />
+    <!-- femto: assistant hidden -->
+    <transaction-assistant v-if="false" v-model="assistantText" @change="onAssistant" @keyup.enter="saveItem" />
 
     <!-- femto: expense-only. Tabs hidden; `type` stays bound (defaults to expense via getEmpty). -->
     <transaction-type-tabs v-if="false" v-model="type" class="mx-3 mt-1 mb-1" />
