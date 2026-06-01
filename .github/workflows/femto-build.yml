@@ -1,0 +1,30 @@
+name: Build femto image (arm64 tarball)
+
+# Builds the stripped-down "femto" Pico image for the Raspberry Pi (linux/arm64)
+# on a native GitHub arm64 runner, then uploads it as a gzipped docker-save
+# tarball artifact. No registry. Trigger manually from the Actions tab or with
+# `gh workflow run femto-build.yml --ref femto`.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Checkout femto source
+        uses: actions/checkout@v4
+
+      - name: Build arm64 image
+        run: docker build --build-arg APP_VERSION=femto -t firefly-pico:femto -f Dockerfile .
+
+      - name: Save and compress image
+        run: docker save firefly-pico:femto | gzip > firefly-pico-femto.tar.gz
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firefly-pico-femto
+          path: firefly-pico-femto.tar.gz
+          retention-days: 7
+          if-no-files-found: error
