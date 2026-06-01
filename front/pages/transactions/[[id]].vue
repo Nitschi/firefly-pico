@@ -10,7 +10,8 @@
 
     <transaction-assistant v-if="!itemId && !isCloning" v-model="assistantText" @change="onAssistant" @keyup.enter="saveItem" />
 
-    <transaction-type-tabs v-model="type" class="mx-3 mt-1 mb-1" />
+    <!-- femto: expense-only. Tabs hidden; `type` stays bound (defaults to expense via getEmpty). -->
+    <transaction-type-tabs v-if="false" v-model="type" class="mx-3 mt-1 mb-1" />
 
     <van-form ref="form" :disabled="isSplitTransaction" :name="formName" class="transaction-form-group" @submit="saveItem" @failed="onValidationError">
       <van-cell-group inset class="dynamic-masonry display-flex-column">
