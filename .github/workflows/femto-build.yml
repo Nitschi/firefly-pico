@@ -2,11 +2,18 @@ name: Build femto image (arm64 tarball)
 
 # Builds the stripped-down "femto" Pico image for the Raspberry Pi (linux/arm64)
 # on a native GitHub arm64 runner, then uploads it as a gzipped docker-save
-# tarball artifact. No registry. Trigger manually from the Actions tab or with
-# `gh workflow run femto-build.yml --ref femto`.
+# tarball artifact. No registry. Runs on every push to femto that touches the
+# app/build, and can also be run manually from the Actions tab.
 
 on:
   workflow_dispatch:
+  push:
+    branches: [femto]
+    paths:
+      - 'front/**'
+      - 'back/**'
+      - 'Dockerfile'
+      - '.github/workflows/femto-build.yml'
 
 jobs:
   build:
