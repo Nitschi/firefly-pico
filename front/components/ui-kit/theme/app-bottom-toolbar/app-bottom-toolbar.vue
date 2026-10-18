@@ -1,6 +1,5 @@
 <template>
   <van-tabbar v-if="!isKeyboardVisible" :safe-area-inset-bottom="true" :fixed="true">
-    <app-bottom-toolbar-item :route="RouteConstants.ROUTE_DASHBOARD" />
     <app-bottom-toolbar-item :route="RouteConstants.ROUTE_TRANSACTION_LIST" />
 
     <app-bottom-toolbar-item :route="RouteConstants.ROUTE_TRANSACTION_ID">
@@ -12,7 +11,6 @@
       </template>
     </app-bottom-toolbar-item>
 
-    <app-bottom-toolbar-item :route="RouteConstants.ROUTE_EXTRAS" />
     <app-bottom-toolbar-item :route="RouteConstants.ROUTE_SETTINGS" :dot="appStore.isNewVersionAvailable" />
   </van-tabbar>
 </template>

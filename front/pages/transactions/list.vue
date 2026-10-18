@@ -63,6 +63,7 @@ import { useListFilters } from '~/composables/useListFilters.js'
 
 const dataStore = useDataStore()
 const appStore = useAppStore()
+const profileStore = useProfileStore()
 const route = useRoute()
 
 
@@ -137,6 +138,12 @@ onMounted(() => {
 
   if (!filterBagHasValues(filters.value)) {
     filters.value = TransactionFilterUtils.getPredefinedFilters()
+  }
+
+  // femto: always constrain the list to the default source account.
+  // Wrapped in an array because the `account` filter maps over its value.
+  if (profileStore.defaultAccountSource) {
+    filters.value = { ...filters.value, account: [profileStore.defaultAccountSource] }
   }
 })
 

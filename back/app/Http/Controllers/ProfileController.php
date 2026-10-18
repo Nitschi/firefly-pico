@@ -40,6 +40,16 @@ class ProfileController extends BaseController
         }
 
         $profiles = Profile::where('auth_token_hash', getAuthTokenHash())->orderBy('created_at', 'desc')->get();
+
+        // The frontend selects the first profile when the device has none stored.
+        // Put the profile named like the Remote-User header first, else "Default profile".
+        $remoteUser = mb_strtolower((string) $request->header('Remote-User'));
+        $first = $profiles->first(fn ($profile) => $remoteUser !== '' && mb_strtolower($profile->name) === $remoteUser)
+            ?? $profiles->firstWhere('name', 'Default profile');
+        if ($first) {
+            $profiles = $profiles->reject(fn ($profile) => $profile->is($first))->prepend($first);
+        }
+
         $result = ['data' => $profiles];
         return $this->respondSuccessWithData($result);
     }

@@ -7,7 +7,8 @@
         <!--        <div class="van-cell-group-title">Setup</div>-->
 
         <app-field v-model="picoBackendURL" left-icon="link-o" :label="$t('settings.setup.pico_backend_url')" :rules="[rule.required()]" required />
-        <settings-token-field v-model="authToken" required />
+        <!-- femto: PAT field hidden; token is still loaded and saved unchanged. -->
+        <settings-token-field v-if="false" v-model="authToken" required />
         <app-boolean v-model="syncProfileInDB" left-icon="points" :label="$t('settings.setup.sync_settings_via_token')" />
         <app-field v-model="daysBetweenFullSync" :label="$t('settings.setup.days_between_sync')" :rules="[rule.required()]" required />
       </van-cell-group>
