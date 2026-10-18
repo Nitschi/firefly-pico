@@ -2,9 +2,9 @@ name: Build femto image (arm64 tarball)
 
 # Builds the stripped-down "femto" Pico image for the Raspberry Pi (linux/arm64)
 # on a native GitHub arm64 runner, pushes it to ghcr.io/<owner>/firefly-pico:femto
-# and also uploads it as a gzipped docker-save tarball artifact. Runs on every
-# push to femto that touches the app/build, and can also be run manually from
-# the Actions tab.
+# and :femto-<short sha>, and also uploads it as a gzipped docker-save tarball
+# artifact. Runs on every push to femto that touches the app/build, and can also
+# be run manually from the Actions tab.
 
 on:
   workflow_dispatch:
@@ -39,10 +39,13 @@ jobs:
 
       - name: Push image to ghcr.io
         run: |
-          image=ghcr.io/${{ github.repository_owner }}/firefly-pico:femto
+          image=ghcr.io/${{ github.repository_owner }}/firefly-pico
           image=${image,,}
-          docker tag firefly-pico:femto "$image"
-          docker push "$image"
+          sha=${{ github.sha }}
+          for tag in femto "femto-${sha::7}"; do
+            docker tag firefly-pico:femto "$image:$tag"
+            docker push "$image:$tag"
+          done
 
       - name: Save and compress image
         run: docker save firefly-pico:femto | gzip > firefly-pico-femto.tar.gz
