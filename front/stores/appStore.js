@@ -63,7 +63,8 @@ export const useAppStore = defineStore('app', () => {
   })
 
   const hasAuthToken = computed(() => {
-    return authToken.value && authToken.value.length > 0
+    // femto: the reverse proxy authenticates and injects the Firefly token
+    return true
   })
 
   const isNewVersionAvailable = computed(() => {
