@@ -4,16 +4,17 @@ FROM composer:2.2 AS composer_base
 FROM alpine:3.22 AS base
 
 #Install packages
+#PHP >= 8.2.35 fixes php2shell (CVE-2026-109618, CVE-2026-109619)
 RUN apk add --no-cache \
     tar \
     nginx \
     nodejs \
     npm \
     supervisor \
-    php82 \
+    'php82>=8.2.35' \
     php82-session \
     php82-ctype \
-    php82-fpm \
+    'php82-fpm>=8.2.35' \
     php82-pdo \
     php82-opcache \
     php82-zip \
