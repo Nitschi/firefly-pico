@@ -10,16 +10,6 @@ import Page from '~/models/Page.js'
 
 const profileStore = useProfileStore()
 
-const startingPage = computed(() => {
-  switch (profileStore.startingPage?.code) {
-    case Page.types.transactionNew.code:
-      return markRaw(TransactionCreate)
-    case Page.types.transactionList.code:
-      return markRaw(TransactionList)
-    case Page.types.dashboard.code:
-      return markRaw(Dashboard)
-  }
-
-  return markRaw(TransactionCreate)
-})
+// femto: always open on the Add Expense form (ignore profileStore.startingPage)
+const startingPage = computed(() => markRaw(TransactionCreate))
 </script>

@@ -30,7 +30,7 @@ useHead({
 useResize()
 
 onMounted(async () => {
-  if (!appStore.authToken) {
+  if (!appStore.hasAuthToken) {
     navigateTo(`${RouteConstants.ROUTE_SETTINGS_SETUP}`)
     return
   }
